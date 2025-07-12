@@ -3,15 +3,15 @@
   "version": "1.0.0",
   "description": "",
   "main": "webpack.config.js",
+  "type": "module",
   "scripts": {
-    "start": "webpack-dev-server --mode development", 
+    "start": "webpack-dev-server --mode development",
     "build": "webpack --mode production",
-    "test": "echo \"Error: no test specified\" && exit 1" 
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "type": "commonjs",
   "dependencies": {
     "bootstrap": "^5.3.7",
     "react": "^19.1.0",
