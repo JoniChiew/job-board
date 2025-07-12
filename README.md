@@ -26,3 +26,5 @@ Agmo's techical assessment 2025 - A mini job board built with Laravel (backend) 
 ## License
 
 This project is for evaluation purposes. Contact cpl4_kl@student.wou.edu.my for permission to use or modify the code.
+
+# Test PAT authentication
