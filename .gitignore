@@ -26,6 +26,7 @@
 /frontend/yarn-error.log
 
 # General
+.env
 .DS_Store
 *.swp
 *.swo
