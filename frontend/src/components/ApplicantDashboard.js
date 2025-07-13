@@ -1,6 +1,14 @@
 // frontend/src/components/ApplicantDashboard.js
 import React, { useState, useEffect, useContext } from "react";
-import { Container, Button, Table, Alert, Form } from "react-bootstrap";
+import {
+  Container,
+  Button,
+  Table,
+  Alert,
+  Form,
+  OverlayTrigger,
+  Tooltip,
+} from "react-bootstrap";
 import { AppContext } from "../AppContext.js";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -49,24 +57,35 @@ function ApplicantDashboard() {
 
   // Handle job application
   const handleApply = async (jobId) => {
+    console.log("Apply button clicked for jobId:", jobId); // Debug log
     setError("");
     const formData = new FormData();
     formData.append("message", messages[jobId] || "");
     formData.append("resume", resumes[jobId]);
 
     try {
+      console.log("Sending apply request:", {
+        jobId,
+        message: messages[jobId],
+        resume: resumes[jobId]?.name,
+      }); // Debug log
       const response = await axios.post(
         `http://localhost:8000/api/jobs/${jobId}/apply`,
         formData,
         {
-          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "multipart/form-data",
+          },
         }
       );
+      console.log("Apply response:", response.data); // Debug log
       setMessages({ ...messages, [jobId]: "" });
       setResumes({ ...resumes, [jobId]: null });
       setApplications([...applications, response.data.application]);
       alert("Application submitted successfully");
     } catch (err) {
+      console.error("Apply error:", err.response?.data); // Debug log
       setError(err.response?.data?.message || "Failed to apply");
     }
   };
@@ -82,7 +101,10 @@ function ApplicantDashboard() {
         `http://localhost:8000/api/applications/${applicationId}/resume`,
         formData,
         {
-          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "multipart/form-data",
+          },
         }
       );
       setApplications(
@@ -115,6 +137,19 @@ function ApplicantDashboard() {
     // Include unapplied active jobs
     ...jobs.filter((job) => !applications.some((app) => app.job_id === job.id)),
   ];
+
+  // Render tooltip for disabled Apply button
+  const renderTooltip = (jobId) => (
+    <Tooltip id={`tooltip-${jobId}`}>
+      {!messages[jobId] && !resumes[jobId]
+        ? "Please enter a message and select a PDF file."
+        : !messages[jobId]
+        ? "Please enter an application message."
+        : !resumes[jobId]
+        ? "Please select a PDF file."
+        : ""}
+    </Tooltip>
+  );
 
   return (
     <Container className="mt-5">
@@ -200,13 +235,25 @@ function ApplicantDashboard() {
                           }
                         />
                       </Form.Group>
-                      <Button
-                        variant="primary"
-                        onClick={() => handleApply(job.id)}
-                        disabled={!messages[job.id] || !resumes[job.id]}
+                      <OverlayTrigger
+                        placement="top"
+                        overlay={renderTooltip(job.id)}
+                        trigger={
+                          !messages[job.id] || !resumes[job.id]
+                            ? ["hover", "focus"]
+                            : []
+                        }
                       >
-                        Apply
-                      </Button>
+                        <span>
+                          <Button
+                            variant="primary"
+                            onClick={() => handleApply(job.id)}
+                            disabled={!messages[job.id] || !resumes[job.id]}
+                          >
+                            Apply
+                          </Button>
+                        </span>
+                      </OverlayTrigger>
                     </>
                   )}
                 </td>
