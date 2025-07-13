@@ -105,6 +105,17 @@ function ApplicantDashboard() {
     navigate("/login");
   };
 
+  // Merge jobs and applications to display applied jobs and active unapplied jobs
+  const displayedJobs = [
+    // Include applied jobs (from applications)
+    ...applications.map((app) => ({
+      ...app.job,
+      application: app, // Attach application details
+    })),
+    // Include unapplied active jobs
+    ...jobs.filter((job) => !applications.some((app) => app.job_id === job.id)),
+  ];
+
   return (
     <Container className="mt-5">
       <h2>Applicant Dashboard</h2>
@@ -115,7 +126,7 @@ function ApplicantDashboard() {
 
       {error && <Alert variant="danger">{error}</Alert>}
 
-      <h3>Available Jobs</h3>
+      <h3>Available and Applied Jobs</h3>
       <Table striped bordered hover>
         <thead>
           <tr>
@@ -128,13 +139,8 @@ function ApplicantDashboard() {
           </tr>
         </thead>
         <tbody>
-          {jobs.map((job) => {
-            const hasApplied = applications.some(
-              (app) => app.job_id === job.id
-            );
-            const application = applications.find(
-              (app) => app.job_id === job.id
-            );
+          {displayedJobs.map((job) => {
+            const hasApplied = !!job.application;
             return (
               <tr key={job.id}>
                 <td>{job.title}</td>
@@ -147,7 +153,9 @@ function ApplicantDashboard() {
                     <>
                       <p className="text-success">
                         Applied on{" "}
-                        {new Date(application.created_at).toLocaleDateString()}
+                        {new Date(
+                          job.application.created_at
+                        ).toLocaleDateString()}
                       </p>
                       <Form.Group className="mb-3">
                         <Form.Control
@@ -155,7 +163,7 @@ function ApplicantDashboard() {
                           accept=".pdf"
                           onChange={(e) =>
                             handleUpdateResume(
-                              application.id,
+                              job.application.id,
                               e.target.files[0]
                             )
                           }

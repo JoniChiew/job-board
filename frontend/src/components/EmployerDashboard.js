@@ -134,6 +134,13 @@ function EmployerDashboard() {
     }
   };
 
+  // Close applications for a specific job
+  const closeApplications = (jobId) => {
+    const updatedApplications = { ...applications };
+    delete updatedApplications[jobId];
+    setApplications(updatedApplications);
+  };
+
   // Handle logout
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -293,7 +300,17 @@ function EmployerDashboard() {
       </Table>
       {Object.keys(applications).map((jobId) => (
         <div key={jobId} className="mt-3">
-          <h4>Applications for Job ID: {jobId}</h4>
+          <h4>
+            Applications for Job ID: {jobId}
+            <Button
+              variant="danger"
+              size="sm"
+              className="ms-2"
+              onClick={() => closeApplications(jobId)}
+            >
+              X
+            </Button>
+          </h4>
           <Table striped bordered hover>
             <thead>
               <tr>
