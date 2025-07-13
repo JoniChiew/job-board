@@ -29,3 +29,7 @@
 .DS_Store
 *.swp
 *.swo
+/.fleet
+/.idea
+/.vscode
+/.phpunit.cache
