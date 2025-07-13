@@ -1,13 +1,14 @@
+// Context for global state management
 import React, { createContext, useState } from "react";
 
 export const AppContext = createContext();
 
-export function AppProvider({ children }) {
-  const [state, setState] = useState({});
+export const AppContextProvider = ({ children }) => {
+  const [user, setUser] = useState(null);
 
   return (
-    <AppContext.Provider value={{ state, setState }}>
+    <AppContext.Provider value={{ user, setUser }}>
       {children}
     </AppContext.Provider>
   );
-}
+};

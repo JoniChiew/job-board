@@ -1,0 +1,112 @@
+{
+    "info": {
+        "name": "Job Board API",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [
+        {
+            "name": "Register",
+            "request": {
+                "method": "POST",
+                "url": "http://localhost:8000/api/register",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    },
+                    {
+                        "key": "Accept",
+                        "value": "application/json"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\"email\":\"test@example.com\",\"password\":\"password123\",\"role\":\"applicant\",\"name\":\"Test User\"}",
+                    "options": {
+                        "raw": {
+                            "language": "json"
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "name": "Login",
+            "request": {
+                "method": "POST",
+                "url": "http://localhost:8000/api/login",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    },
+                    {
+                        "key": "Accept",
+                        "value": "application/json"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\"email\":\"test@example.com\",\"password\":\"password123\"}",
+                    "options": {
+                        "raw": {
+                            "language": "json"
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "name": "Forgot Password",
+            "request": {
+                "method": "POST",
+                "url": "http://localhost:8000/api/forgot-password",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    },
+                    {
+                        "key": "Accept",
+                        "value": "application/json"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\"email\":\"test@example.com\"}",
+                    "options": {
+                        "raw": {
+                            "language": "json"
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "name": "Reset Password",
+            "request": {
+                "method": "POST",
+                "url": "http://localhost:8000/api/reset-password",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    },
+                    {
+                        "key": "Accept",
+                        "value": "application/json"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\"email\":\"test@example.com\",\"password\":\"newpassword123\",\"password_confirmation\":\"newpassword123\",\"token\":\"<reset_token>\"}",
+                    "options": {
+                        "raw": {
+                            "language": "json"
+                        }
+                    }
+                }
+            }
+        }
+    ]
+}
