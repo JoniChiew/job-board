@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Log;
 
 class AuthController extends Controller
 {
@@ -17,27 +18,36 @@ class AuthController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
-            'password' => 'required|min:6',
+            'password' => 'required|min:6|confirmed',
             'role' => 'required|in:employer,applicant',
         ]);
 
         if ($validator->fails()) {
-            return response()->json(['message' => $validator->errors()], 422);
+            return response()->json([
+                'message' => 'Validation failed',
+                'errors' => $validator->errors(),
+            ], 422);
         }
 
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-            'role' => $request->role,
-        ]);
+        try {
+            $user = User::create([
+                'name' => $request->name,
+                'email' => $request->email,
+                'password' => Hash::make($request->password),
+                'role' => $request->role,
+            ]);
 
-        $token = $user->createToken('auth_token')->accessToken;
+            // Generate Passport token
+            $token = $user->createToken('auth_token')->accessToken;
 
-        return response()->json([
-            'token' => $token,
-            'user' => $user,
-        ], 201);
+            return response()->json([
+                'token' => $token,
+                'user' => $user,
+            ], 201);
+        } catch (\Exception $e) {
+            Log::error('Registration failed: ' . $e->getMessage());
+            return response()->json(['message' => 'Registration failed, please try again'], 500);
+        }
     }
 
     // Login user and return token
@@ -77,11 +87,15 @@ class AuthController extends Controller
             return response()->json(['message' => $validator->errors()], 422);
         }
 
-        $status = Password::sendResetLink($request->only('email'));
-
-        return $status === Password::RESET_LINK_SENT
-            ? response()->json(['message' => 'Password reset link sent to your email'], 200)
-            : response()->json(['message' => 'Unable to send reset link'], 500);
+        try {
+            $status = Password::sendResetLink($request->only('email'));
+            return $status === Password::RESET_LINK_SENT
+                ? response()->json(['message' => 'Password reset link sent to your email'], 200)
+                : response()->json(['message' => 'Unable to send reset link'], 500);
+        } catch (\Exception $e) {
+            Log::error('Forgot password failed: ' . $e->getMessage());
+            return response()->json(['message' => 'Unable to send reset link'], 500);
+        }
     }
 
     // Reset password
@@ -97,18 +111,23 @@ class AuthController extends Controller
             return response()->json(['message' => $validator->errors()], 422);
         }
 
-        $status = Password::reset(
-            $request->only('email', 'password', 'password_confirmation', 'token'),
-            function ($user, $password) {
-                $user->forceFill([
-                    'password' => Hash::make($password),
-                    'remember_token' => Str::random(60),
-                ])->save();
-            }
-        );
+        try {
+            $status = Password::reset(
+                $request->only('email', 'password', 'password_confirmation', 'token'),
+                function ($user, $password) {
+                    $user->forceFill([
+                        'password' => Hash::make($password),
+                        'remember_token' => Str::random(60),
+                    ])->save();
+                }
+            );
 
-        return $status === Password::PASSWORD_RESET
-            ? response()->json(['message' => 'Password reset successfully'], 200)
-            : response()->json(['message' => 'Invalid token or email'], 400);
+            return $status === Password::PASSWORD_RESET
+                ? response()->json(['message' => 'Password reset successfully'], 200)
+                : response()->json(['message' => 'Invalid token or email'], 400);
+        } catch (\Exception $e) {
+            Log::error('Password reset failed: ' . $e->getMessage());
+            return response()->json(['message' => 'Password reset failed'], 500);
+        }
     }
 }

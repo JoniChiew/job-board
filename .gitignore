@@ -1,26 +1,29 @@
 # Laravel (PHP)
-/vendor/
-.env
-.env.backup
-.env.production
-.phpunit.result.cache
-Homestead.yaml
-Homestead.json
-/.vagrant
-/storage/framework/
-/storage/logs/
-/bootstrap/cache/
-auth.json
+/backend/vendor/
+/backend/.env
+/backend/.env.backup
+/backend/.env.production
+/backend/.phpunit.result.cache
+/backend/Homestead.yaml
+/backend/Homestead.json
+/backend/.vagrant
+/backend/storage/framework/
+/backend/storage/logs/
+/backend/storage/cache/
+/backend/bootstrap/cache/
+/backend/public/storage/*
+/backend/auth.json
 
 # React (Node.js)
 /frontend/node_modules/
 /frontend/build/
+/frontend/dist/
 /frontend/.env
 /frontend/.env.local
 /frontend/.env.development
 /frontend/.env.production
-npm-debug.log
-yarn-error.log
+/frontend/npm-debug.log
+/frontend/yarn-error.log
 
 # General
 .DS_Store
