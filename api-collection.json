@@ -107,6 +107,96 @@
                     }
                 }
             }
+        },
+        {
+            "name": "Create Job",
+            "request": {
+                "method": "POST",
+                "url": "http://localhost:8000/api/jobs",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    },
+                    {
+                        "key": "Accept",
+                        "value": "application/json"
+                    },
+                    {
+                        "key": "Authorization",
+                        "value": "Bearer {{token}}"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\"title\":\"Software Engineer\",\"description\":\"Develop web applications\",\"location\":\"Remote\",\"salary_range\":\"$80k-$120k\",\"is_remote\":true,\"status\":\"published\"}",
+                    "options": {
+                        "raw": {
+                            "language": "json"
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "name": "Get Jobs",
+            "request": {
+                "method": "GET",
+                "url": "http://localhost:8000/api/jobs",
+                "header": [
+                    {
+                        "key": "Accept",
+                        "value": "application/json"
+                    }
+                ]
+            }
+        },
+        {
+            "name": "Apply for Job",
+            "request": {
+                "method": "POST",
+                "url": "http://localhost:8000/api/jobs/{{jobId}}/apply",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    },
+                    {
+                        "key": "Accept",
+                        "value": "application/json"
+                    },
+                    {
+                        "key": "Authorization",
+                        "value": "Bearer {{token}}"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\"message\":\"I am interested in this position.\"}",
+                    "options": {
+                        "raw": {
+                            "language": "json"
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "name": "Get Job Applications",
+            "request": {
+                "method": "GET",
+                "url": "http://localhost:8000/api/jobs/{{jobId}}/applications",
+                "header": [
+                    {
+                        "key": "Accept",
+                        "value": "application/json"
+                    },
+                    {
+                        "key": "Authorization",
+                        "value": "Bearer {{token}}"
+                    }
+                ]
+            }
         }
     ]
 }

@@ -18,7 +18,7 @@ class JobController extends Controller
             'location' => 'required|string|max:255',
             'salary_range' => 'nullable|string|max:255',
             'is_remote' => 'boolean',
-            'status' => 'required|in:draft,published',
+            'status' => 'required|in:closed,active,draft,filled',
         ]);
 
         if ($validator->fails()) {
@@ -45,7 +45,18 @@ class JobController extends Controller
     // Get all published jobs (public)
     public function index()
     {
-        $jobs = Job::where('status', 'published')->get();
+        $jobs = Job::where('status', 'active')->get();
+        return response()->json(['jobs' => $jobs], 200);
+    }
+
+    // Get jobs created by the authenticated employer
+    public function employerJobs()
+    {
+        if (Auth::user()->role !== 'employer') {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+
+        $jobs = Job::where('user_id', Auth::id())->get();
         return response()->json(['jobs' => $jobs], 200);
     }
 
@@ -53,12 +64,12 @@ class JobController extends Controller
     public function update(Request $request, $id)
     {
         $validator = Validator::make($request->all(), [
-            'title' => 'required|string|max:255',
-            'description' => 'required|string',
-            'location' => 'required|string|max:255',
+            'title' => 'sometimes|string|max:255',
+            'description' => 'sometimes|string',
+            'location' => 'sometimes|string|max:255',
             'salary_range' => 'nullable|string|max:255',
             'is_remote' => 'boolean',
-            'status' => 'required|in:draft,published',
+            'status' => 'sometimes|in:closed,active,draft,filled',
         ]);
 
         if ($validator->fails()) {

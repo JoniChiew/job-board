@@ -1,12 +1,13 @@
-// Reset password component
+// frontend/src/components/ResetPassword.js
 import React, { useState } from "react";
 import { Form, Button, Container, Alert } from "react-bootstrap";
-import { Link, useSearchParams } from "react-router-dom";
+import { Link, useSearchParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 
 function ResetPassword() {
   const [searchParams] = useSearchParams();
-  const [email, setEmail] = useState("");
+  const navigate = useNavigate();
+  const [email, setEmail] = useState(searchParams.get("email") || "");
   const [password, setPassword] = useState("");
   const [passwordConfirmation, setPasswordConfirmation] = useState("");
   const [message, setMessage] = useState("");
@@ -35,10 +36,14 @@ function ResetPassword() {
           password,
           password_confirmation: passwordConfirmation,
           token: searchParams.get("token"),
-        }
+        },
+        { headers: { "Content-Type": "application/json" } }
       );
-      setMessage(response.data.message);
+      console.log("Reset password response:", response.data); // Debug log
+      setMessage(response.data.message || "Password reset successfully");
+      setTimeout(() => navigate("/login"), 2000);
     } catch (err) {
+      console.error("Reset password error:", err.response?.data || err.message); // Debug log
       setError(err.response?.data?.message || "Password reset failed");
     }
   };
