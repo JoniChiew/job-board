@@ -1,6 +1,6 @@
-// Forgot password component
+// frontend/src/components/ForgotPassword.js
 import React, { useState } from "react";
-import { Form, Button, Container, Alert } from "react-bootstrap";
+import { Container, Form, Button, Alert } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import axios from "axios";
 
@@ -14,6 +14,7 @@ function ForgotPassword() {
     e.preventDefault();
     setError("");
     setMessage("");
+    console.log("Sending reset password request for email:", email); // Debug log
 
     if (!email) {
       setError("Please enter your email");
@@ -23,12 +24,17 @@ function ForgotPassword() {
     try {
       const response = await axios.post(
         "http://localhost:8000/api/forgot-password",
+        { email },
         {
-          email,
+          headers: { "Content-Type": "application/json" },
         }
       );
-      setMessage(response.data.message);
+      console.log("Reset password response:", response.data); // Debug log
+      setMessage(
+        response.data.message || "Password reset link sent successfully"
+      );
     } catch (err) {
+      console.error("Reset password error:", err.response?.data); // Debug log
       setError(err.response?.data?.message || "Failed to send reset link");
     }
   };

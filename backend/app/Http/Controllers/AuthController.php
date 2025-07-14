@@ -79,28 +79,32 @@ class AuthController extends Controller
     // Send password reset link
     public function forgotPassword(Request $request)
     {
+        Log::info("Forgot password request received for email: " . $request->email); // Debug log
         $validator = Validator::make($request->all(), [
             'email' => 'required|email|exists:users,email',
         ]);
 
         if ($validator->fails()) {
+            Log::error("Validation failed: " . json_encode($validator->errors())); // Debug log
             return response()->json(['message' => $validator->errors()], 422);
         }
 
         try {
             $status = Password::sendResetLink($request->only('email'));
+            Log::info("Password reset status: " . $status); // Debug log
             return $status === Password::RESET_LINK_SENT
                 ? response()->json(['message' => 'Password reset link sent to your email'], 200)
-                : response()->json(['message' => 'Unable to send reset link'], 500);
+                : response()->json(['message' => 'Unable to send reset link'], 422);
         } catch (\Exception $e) {
-            Log::error('Forgot password failed: ' . $e->getMessage());
-            return response()->json(['message' => 'Unable to send reset link'], 500);
+            Log::error('Failed to send reset link: ' . $e->getMessage()); // Debug log
+            return response()->json(['message' => 'Failed to send reset link'], 500);
         }
     }
 
     // Reset password
     public function resetPassword(Request $request)
     {
+        Log::info("Reset password request received for email: " . $request->email); // Debug log
         $validator = Validator::make($request->all(), [
             'email' => 'required|email|exists:users,email',
             'password' => 'required|min:6|confirmed',
@@ -108,6 +112,7 @@ class AuthController extends Controller
         ]);
 
         if ($validator->fails()) {
+            Log::error("Validation failed: " . json_encode($validator->errors())); // Debug log
             return response()->json(['message' => $validator->errors()], 422);
         }
 
@@ -122,11 +127,12 @@ class AuthController extends Controller
                 }
             );
 
+            Log::info("Password reset status: " . $status); // Debug log
             return $status === Password::PASSWORD_RESET
                 ? response()->json(['message' => 'Password reset successfully'], 200)
                 : response()->json(['message' => 'Invalid token or email'], 400);
         } catch (\Exception $e) {
-            Log::error('Password reset failed: ' . $e->getMessage());
+            Log::error('Password reset failed: ' . $e->getMessage()); // Debug log
             return response()->json(['message' => 'Password reset failed'], 500);
         }
     }
