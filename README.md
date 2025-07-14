@@ -1,62 +1,71 @@
-Job Board Application
-A full-stack job board application built for Agmo's Technical Assessment 2025. Employers can post and manage jobs, while applicants can apply with resumes. Built with Laravel (backend) and React (frontend), featuring RESTful APIs, user authentication, and resume uploads.
-Features
+# Job Board Application
 
-User Authentication:
-Register as employer or applicant.
-Login with email/password.
-Password reset via email (Mailtrap).
+A full-stack job board application built for Agmo's Technical Assessment 2025. Employers can post, manage, and view job applications, while applicants can browse and apply with resumes. Built with Laravel (backend) and React (frontend), featuring RESTful APIs, user authentication, resume uploads, and email notifications.
 
-Employer Dashboard:
-Create, update, delete jobs.
-View applicant lists with close button.
+## Features
 
-Applicant Dashboard:
-Browse and apply to active jobs with message and PDF resume.
-View applied jobs (all statuses).
-Tooltip for input validation.
+### User Authentication
+- Register as employer or applicant.
+- Login with email/password.
+- Password reset via email (Mailtrap).
 
-Resume Upload:
-Secure PDF uploads stored in public/storage/resumes.
-Accessible via unique URLs.
+### Employer Dashboard
+- Create, update, delete jobs.
+- View applicant lists with close button ("X").
+- Pagination (5 jobs per page).
 
-RESTful API:
-Stateless JWT authentication (Laravel Passport).
-Endpoints: /api/register, /api/login, /api/forgot-password, /api/reset-password, /api/jobs, etc.
+### Applicant Dashboard
+- Browse and apply to active jobs with message and PDF resume.
+- View applied jobs (all statuses).
+- Pagination (5 jobs per page).
+- Tooltip for input validation.
 
-CORS:
-Custom middleware for cross-origin requests (http://localhost:3000).
+### Resume Upload
+- Secure PDF uploads stored in `public/storage/resumes`.
+- Accessible via unique URLs.
 
-Tech Stack
+### RESTful API
+- Stateless JWT authentication (Laravel Passport).
+- Endpoints: `/api/register`, `/api/login`, `/api/forgot-password`, `/api/reset-password`, `/api/jobs`, etc.
+- JSON responses with validation and error handling.
 
-Backend: Laravel 10.3.3, PHP 8.1.4, MySQL, Laravel Passport
-Frontend: React 19.1.0, React Router 7.6.3, React Bootstrap 2.10.10, Axios
-Tools: XAMPP, Node.js 22.14.0, Composer 2.8.10, Postman, Git 2.48.1
-Mail: Mailtrap (SMTP)
+### CORS
+- Handled by Laravel built-in CORS middleware (`Illuminate\Http\Middleware\HandleCors`).
 
-Prerequisites
+## Tech Stack
+- **Backend**: Laravel 10.3.3, PHP 8.1.4, MySQL, Laravel Passport
+- **Frontend**: React 19.1.0, React Router 7.6.3, React Bootstrap 2.10.10, Axios
+- **Tools**: XAMPP, Node.js 22.14.0, Composer 2.8.10, Postman, Git 2.48.1
+- **Mail**: Mailtrap (SMTP)
 
-Windows 11
-XAMPP (PHP 8.1.4, MySQL)
-Node.js 22.14.0, npm 11.1.0
-Composer 2.8.10
-Git 2.48.1
-Postman
-Mailtrap account
+## Prerequisites
+- Windows 11
+- XAMPP (PHP 8.1.4, MySQL)
+- Node.js 22.14.0, npm 11.1.0
+- Composer 2.8.10
+- Git 2.48.1
+- Postman
+- Mailtrap account
 
-Setup Instructions
+## Setup Instructions
 
-Clone Repository:
+### Clone Repository
+```bash
 cd /c/xampp/htdocs
 git clone https://github.com/JoniChiew/job-board.git
 cd job-board
+```
 
-Backend Setup:
+### Backend Setup
+```bash
 cd backend
 composer install
 cp .env.example .env
+```
 
-Edit backend/.env:APP_NAME=JobBoard
+Edit `backend/.env`:
+```env
+APP_NAME=JobBoard
 APP_ENV=local
 APP_DEBUG=true
 APP_URL=http://localhost:8000
@@ -75,62 +84,68 @@ MAIL_ENCRYPTION=tls
 MAIL_FROM_ADDRESS="no-reply@jobboard.com"
 MAIL_FROM_NAME="Job Board"
 QUEUE_CONNECTION=sync
+```
 
-Run:php artisan migrate
+Run:
+```bash
+php artisan key:generate
+php artisan migrate
 php artisan passport:install
 php artisan storage:link
 php artisan serve
+```
 
-Frontend Setup:
+### Frontend Setup
+```bash
 cd ../frontend
 npm install
 npm start
+```
 
-API Testing:
+### API Testing
+- Import `backend/api-collection.json` into Postman.
+- Test endpoints: `/api/register`, `/api/login`, `/api/forgot-password`, `/api/reset-password`, `/api/jobs`, etc.
 
-Import api-collection.json into Postman.
-Test endpoints: /api/register, /api/login, /api/forgot-password, /api/reset-password, /api/jobs.
+### Verify
+- Frontend: http://localhost:3000
+- Backend: http://localhost:8000
+- Database: Check `job_board` tables (`users`, `jobs`, `applications`, `password_reset_tokens`).
+- Mailtrap: Verify emails at https://mailtrap.io.
 
-Verify:
+## Usage
 
-Frontend: http://localhost:3000
-Backend: http://localhost:8000
-Database: Check job_board tables (users, jobs, applications, password_reset_tokens).
-Mailtrap: Verify emails at https://mailtrap.io.
+### Register/Login
+- Visit http://localhost:3000/register to create an account (employer or applicant).
+- Login at http://localhost:3000/login.
 
-Usage
+### Employer
+- Access http://localhost:3000/employer/dashboard to manage jobs and view applications.
 
-Register/Login:
-Visit http://localhost:3000/register to create an account (employer or applicant).
-Login at http://localhost:3000/login.
+### Applicant
+- Access http://localhost:3000/applicant/dashboard to browse and apply to jobs.
 
-Employer:
-Access http://localhost:3000/employer/dashboard to manage jobs and view applications.
+### Password Reset
+- Request reset at http://localhost:3000/forgot-password.
+- Check Mailtrap for reset link, then reset at http://localhost:3000/reset-password.
 
-Applicant:
-Access http://localhost:3000/applicant/dashboard to browse and apply to jobs.
+## Project Status
+### Completed
+- User authentication (register, login, password reset).
+- Employer job CRUD and application viewing.
+- Applicant job listing and application with resume upload.
+- CORS handling with Laravel built-in middleware.
+- Frontend pagination (5 items per page).
+- Git setup and `.env` protection.
+- Postman collection (`api-collection.json`).
 
-Password Reset:
-Request reset at http://localhost:3000/forgot-password.
-Check Mailtrap for reset link, then reset at http://localhost:3000/reset-password.
+### Pending
+- Email verification for new users.
+- Application status updates (accepted, rejected).
+- Job search/filtering.
+- Backend unit tests.
 
-Project Status
-
-Completed:
-User authentication (register, login, password reset).
-Employer job CRUD and application viewing.
-Applicant job listing and application with resume upload.
-CORS handling with custom middleware.
-Git setup and .env protection.
-
-Pending:
-Backup functionality (fix xcopy error).
-Email verification for new users.
-Job search/filtering.
-Pagination for job/application lists.
-Application status updates (accepted, rejected).
-
-Contributing
+## Contributing
 This project is for evaluation purposes. Contact cpl4_kl@student.wou.edu.my for permission to use or modify the code.
-License
+
+## License
 No license applied. For evaluation only.
