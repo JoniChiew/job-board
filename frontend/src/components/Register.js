@@ -1,4 +1,4 @@
-// Register component for user registration
+// frontend/src/components/Register.js
 import React, { useState, useContext } from "react";
 import { Form, Button, Container, Alert } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
@@ -35,6 +35,7 @@ function Register() {
       const response = await axios.post("http://localhost:8000/api/register", {
         email,
         password,
+        password_confirmation: confirmPassword, // Add password_confirmation
         role,
         name,
       });
@@ -51,7 +52,15 @@ function Register() {
           : "/applicant/dashboard"
       );
     } catch (err) {
-      setError(err.response?.data?.message || "Registration failed");
+      // Handle validation errors
+      if (err.response?.status === 422 && err.response?.data?.errors) {
+        const errors = err.response.data.errors;
+        const errorMessages = Object.values(errors).flat().join(", ");
+        setError(errorMessages || "Registration failed");
+      } else {
+        setError(err.response?.data?.message || "Registration failed");
+      }
+      console.error(err);
     }
   };
 

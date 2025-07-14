@@ -5,18 +5,16 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Job extends Model
+class Application extends Model
 {
     use HasFactory;
 
     // Fillable fields for mass assignment
     protected $fillable = [
         'user_id',
-        'title',
-        'description',
-        'location',
-        'salary_range',
-        'is_remote',
+        'job_id',
+        'message',
+        'resume',
         'status',
     ];
 
@@ -26,9 +24,9 @@ class Job extends Model
         return $this->belongsTo(User::class);
     }
 
-    // Relationship with applications
-    public function applications()
+    // Relationship with job
+    public function job()
     {
-        return $this->hasMany(Application::class);
+        return $this->belongsTo(Job::class);
     }
 }
